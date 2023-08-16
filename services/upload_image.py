@@ -6,7 +6,7 @@ import boto3
 load_dotenv()
 
 # Function to upload files to S3 using environment variables from .env
-def upload_to_s3(file_path, bucket_name, object_name):
+def upload_directory_to_s3(directory_path, bucket_name, s3_prefix):
     aws_access_key = os.environ.get('AWS_ACCESS_KEY_ID')
     aws_secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
@@ -19,7 +19,31 @@ def upload_to_s3(file_path, bucket_name, object_name):
         aws_secret_access_key=aws_secret_key
     )
 
-    s3.upload_file(file_path, bucket_name, object_name)
+    s3_urls = []
 
+    for root, _, files in os.walk(directory_path):
+        for file_name in files:
+            file_path = os.path.join(root, file_name)
+            s3_object_key = os.path.join(s3_prefix, file_name)
+            
+            s3.upload_file(file_path, bucket_name, s3_object_key)
+            
+            s3_url = f"https://{bucket_name}.s3.amazonaws.com/{s3_object_key}"
+            s3_urls.append(s3_url)
+            print(s3_urls)
+    
+    return s3_urls
 
-upload_to_s3("E:\\repo\Image_Extraction_yolov5_image_segmentation\prediction.jpg", "canyon-creek-cuts", "Predicted_images/pred_1.jpg")
+directory_path =  "E:\creek_cut\Image_Extraction_yolov5_image_segmentation\cropped_images_from_the_album"
+bucket_name = "canyon-creek-cuts"
+s3_prefix = "album_121/Predicted_images/"
+
+uploaded_urls = upload_directory_to_s3(directory_path, bucket_name, s3_prefix)
+print(uploaded_urls)
+
+# Usage example
+upload_directory_to_s3(
+    "E:\creek_cut\Image_Extraction_yolov5_image_segmentation\cropped_images_from_the_album",  # Local directory path
+    "canyon-creek-cuts",        # S3 bucket name
+    "album_121/Predicted_images/"          # S3 prefix (path within the bucket)
+)
