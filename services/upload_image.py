@@ -33,17 +33,3 @@ def upload_directory_to_s3(directory_path, bucket_name, s3_prefix):
             print(s3_urls)
     
     return s3_urls
-
-directory_path =  "E:\creek_cut\Image_Extraction_yolov5_image_segmentation\cropped_images_from_the_album"
-bucket_name = "canyon-creek-cuts"
-s3_prefix = "album_121/Predicted_images/"
-
-uploaded_urls = upload_directory_to_s3(directory_path, bucket_name, s3_prefix)
-print(uploaded_urls)
-
-# Usage example
-upload_directory_to_s3(
-    "E:\creek_cut\Image_Extraction_yolov5_image_segmentation\cropped_images_from_the_album",  # Local directory path
-    "canyon-creek-cuts",        # S3 bucket name
-    "album_121/Predicted_images/"          # S3 prefix (path within the bucket)
-)

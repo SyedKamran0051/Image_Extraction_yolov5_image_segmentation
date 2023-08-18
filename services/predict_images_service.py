@@ -42,7 +42,7 @@ class PredictImagesService:
 
         return model
     
-    def bounding_boxes(self, model, image_paths, target_size=(1280,1280)):
+    def bounding_boxes(self, model, image_paths, target_size=(2000,2000)):
         segmented_images_paths = []
         for image_path in image_paths:
             print(image_path)
@@ -86,7 +86,6 @@ class PredictImagesService:
                 cv2.imwrite(save_path, cropped_image)
                 segmented_images_paths.append(save_path)
 
-            os.remove(temp_resized_image_path)    
+            os.remove(temp_resized_image_path)
 
         return segmented_images_paths
-

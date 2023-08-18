@@ -48,9 +48,3 @@ def download_image_from_s3_url(s3_url, local_directory):
     s3_resource.Bucket(bucket_name).download_file(object_key, local_file_path)
 
     print(f"Downloaded: {s3_url} -> {local_file_path}")
-
-
-s3_directory_url = "s3://canyon-creek-cuts/album_121/"
-local_directory = "E:/creek_cut/Image_Extraction_yolov5_image_segmentation/dowloaded_album//"
-
-download_images_from_s3_directory(s3_directory_url, local_directory)

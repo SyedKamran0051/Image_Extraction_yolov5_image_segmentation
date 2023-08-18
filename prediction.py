@@ -2,6 +2,11 @@ from flask import Flask, request, jsonify
 import os
 import cv2
 from roboflow import Roboflow
+from dotenv import load_dotenv
+
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 
