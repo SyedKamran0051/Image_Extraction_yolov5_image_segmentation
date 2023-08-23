@@ -42,7 +42,7 @@ class PredictImagesService:
 
         return model
     
-    def bounding_boxes(self, model, image_paths, target_size=(2000,2000)):
+    def bounding_boxes(self, model, image_paths, target_size=(2500,2500)):
         segmented_images_paths = []
         for image_path in image_paths:
             print(image_path)
@@ -55,8 +55,20 @@ class PredictImagesService:
 
             # Perform prediction
             # Resize the image
-            resized_image = cv2.resize(image, target_size)
+            # Calculate new dimensions while maintaining aspect ratio
+            original_height, original_width = image.shape[:2]
+            target_width, target_height = target_size
 
+            aspect_ratio = original_width / original_height
+            new_width = int(target_height * aspect_ratio)
+            new_height = target_height
+
+            # Choose a high-quality interpolation method (Lanczos)
+            interpolation_method = cv2.INTER_LANCZOS4
+
+            # Resize the image while maintaining aspect ratio
+            resized_image = cv2.resize(image, (new_width, new_height), interpolation=interpolation_method)
+            
             # Save the resized image temporarily to a new path
             temp_resized_image_path = "E:\creek_cut\Image_Extraction_yolov5_image_segmentation\\temp\\resized_image.jpg"
             cv2.imwrite(temp_resized_image_path, resized_image)

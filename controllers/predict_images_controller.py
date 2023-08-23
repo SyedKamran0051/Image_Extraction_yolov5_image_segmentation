@@ -26,7 +26,7 @@ if not os.path.exists(local_directory):
     os.makedirs(local_directory)
 
 bucket_name = "canyon-creek-cuts"
-s3_prefix = "Predicted_images/"
+s3_prefix = "album_121/Predicted_images/"
 path_file = "Image_Extraction_yolov5_image_segmentation/paths.txt"
 
 # Read the API key from the secret_key.txt file
@@ -66,12 +66,12 @@ async def predict():
     cropped_images_paths = predict_service.bounding_boxes(model=model, image_paths=image_paths)
     # Concatenate the downloaded S3 directory and the prefix for uploading
     # Extract the prefix from the S3 URL
-    parsed_url = urlparse(s3_directory_url)
-    s3_prefix = parsed_url.path.strip('/')
+    #parsed_url = urlparse(s3_directory_url)
+    #s3_prefix = parsed_url.path.strip('/')
 
-    complete_s3_prefix = f'{s3_prefix}\predictions'  # Modify this as needed
+    #complete_s3_prefix = f'{s3_prefix}\predictions'  # Modify this as needed
     # upload cropped images to S3 and return the S3 URLs as a list
-    cropped_images_uploaded_urls = upload_directory_to_s3(cropped_images_directory, bucket_name, complete_s3_prefix)
+    cropped_images_uploaded_urls = upload_directory_to_s3(cropped_images_directory, bucket_name, s3_prefix)
     print(cropped_images_uploaded_urls)
     # return S3 URLs of the uploaded images
     return jsonify({'Cropped_images': cropped_images_uploaded_urls}), 200
