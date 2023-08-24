@@ -13,7 +13,6 @@ from services.download_image import download_images_from_s3_directory
 from services.upload_image import upload_directory_to_s3
 print("Current Working Directory:", os.getcwd())
 
-app = Flask(__name__)
 predict_images_blueprint = Blueprint('predict_images', __name__)
 predict_service = PredictImagesService()
 
@@ -26,12 +25,8 @@ if not os.path.exists(local_directory):
     os.makedirs(local_directory)
 
 bucket_name = "canyon-creek-cuts"
-s3_prefix = "album_121/Predicted_images/"
-path_file = "Image_Extraction_yolov5_image_segmentation/paths.txt"
 
-# Read the API key from the secret_key.txt file
-with open('E:/repo/Image_Extraction_yolov5_image_segmentation/secret_key.txt', 'r') as file:
-    secret_key = file.read().strip()
+
 
 # Health check endpoint
 @predict_images_blueprint.route('/health', methods=['GET'])
@@ -40,14 +35,14 @@ def health_check():
 
 @predict_images_blueprint.route('/predict', methods=['POST'])
 async def predict():
-    print(cropped_images_directory)
-    print(local_directory)
+
     # Get the JSON data from the request
     request_data = request.json
 
     # Retrieve the s3_directory_url from the JSON data
     s3_directory_url = request_data.get('s3_directory_url')
-
+    s3_folder_name= request_data.get('s3_folder')
+    s3_prefix = s3_folder_name + 'Predicted_images'
     print(s3_directory_url)
 
     if not s3_directory_url:
@@ -60,7 +55,8 @@ async def predict():
     image_paths = predict_service.loading_images_paths(directory_path=local_directory)
 
     # Initialize the model 
-    model = predict_service.loading_model(api_key=secret_key)
+    api_key = os.getenv("API_KEY")
+    model = predict_service.loading_model(api_key=api_key)
 
     # Drawing bounding boxes based on instance segmentation prediction results
     cropped_images_paths = predict_service.bounding_boxes(model=model, image_paths=image_paths)
@@ -76,7 +72,7 @@ async def predict():
     # return S3 URLs of the uploaded images
     return jsonify({'Cropped_images': cropped_images_uploaded_urls}), 200
 
-app.register_blueprint(predict_images_blueprint)
+# app.register_blueprint(predict_images_blueprint)
 
-if __name__ == '__main__':
-    app.run()
+# if __name__ == '__main__':
+#     app.run()

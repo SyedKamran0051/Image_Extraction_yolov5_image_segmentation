@@ -32,8 +32,9 @@ class PredictImagesService:
 
     def loading_model(self, api_key):
         # Read the API key from the secret_key.txt file
-        with open('E:\\repo\Image_Extraction_yolov5_image_segmentation\secret_key.txt', 'r') as file:
-            api_key = file.read().strip()
+
+        api_key = os.getenv("API_KEY")
+
 
         # Initialize Roboflow
         rf = Roboflow(api_key=api_key)
@@ -70,7 +71,7 @@ class PredictImagesService:
             resized_image = cv2.resize(image, (new_width, new_height), interpolation=interpolation_method)
             
             # Save the resized image temporarily to a new path
-            temp_resized_image_path = "E:\creek_cut\Image_Extraction_yolov5_image_segmentation\\temp\\resized_image.jpg"
+            temp_resized_image_path = "/Users/me/code/Image_Extraction_yolov5_image_segmentation/temp/resized_image.jpg"
             cv2.imwrite(temp_resized_image_path, resized_image)
 
             # Perform prediction using the resized image path
@@ -94,7 +95,7 @@ class PredictImagesService:
                 # Save the segmented image with corresponding name
                 original_image_name = os.path.basename(image_path)
                 segmented_image_name = f"segmented_{idx}_{original_image_name}"
-                save_path = os.path.join("E:/creek_cut/Image_Extraction_yolov5_image_segmentation/cropped_images_from_the_album", segmented_image_name)
+                save_path = os.path.join("/Users/me/code/Image_Extraction_yolov5_image_segmentation/cropped_images_from_the_album", segmented_image_name)
                 cv2.imwrite(save_path, cropped_image)
                 segmented_images_paths.append(save_path)
 
