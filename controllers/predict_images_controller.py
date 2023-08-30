@@ -68,11 +68,8 @@ async def predict():
     #complete_s3_prefix = f'{s3_prefix}\predictions'  # Modify this as needed
     # upload cropped images to S3 and return the S3 URLs as a list
     cropped_images_uploaded_urls = upload_directory_to_s3(cropped_images_directory, bucket_name, s3_prefix)
+    #emply local 
     print(cropped_images_uploaded_urls)
     # return S3 URLs of the uploaded images
     return jsonify({'Cropped_images': cropped_images_uploaded_urls}), 200
 
-# app.register_blueprint(predict_images_blueprint)
-
-# if __name__ == '__main__':
-#     app.run()

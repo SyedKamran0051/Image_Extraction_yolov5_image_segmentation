@@ -7,6 +7,7 @@ class DashboardService:
         new_folder = Folder(user=user, folder=folder_name)
         db.session.add(new_folder)
         db.session.commit()
+        # make folder in s3
         return new_folder
 
     @staticmethod
@@ -15,5 +16,6 @@ class DashboardService:
         if folder:
             db.session.delete(folder)
             db.session.commit()
+            # delete from s3
             return True
         return False
