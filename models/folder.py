@@ -9,5 +9,5 @@ class Folder(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.String(120), nullable=False)
-    folder = db.Column(db.String(120), nullable=False)
+    folder = db.Column(db.String(120),unique=True, nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)

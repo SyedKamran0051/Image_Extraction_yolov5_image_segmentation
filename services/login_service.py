@@ -1,6 +1,7 @@
 import jwt
 from database_connection import DatabaseConnection
 import os
+from werkzeug.security import check_password_hash
 from models.user import User
 from datetime import datetime,timedelta
 from init_db import db
@@ -12,26 +13,33 @@ class LoginService:
     def __init__(self, db_path):
         self.db_path = db_path
 
+    def auth(self, username):
+        user = User.query.filter_by(username=username).first()  # Assuming a query method in User class
+        if user:
+            return {"username": user.username, "password": user.password}
+        else:
+            return None 
+        
     def authenticate_user(self, username, password):
         # Check credentials against database
         db = DatabaseConnection(self.db_path)
+        print(username, password)
         try:
             cursor = db.connect()
         except Exception as e:
             return e
-        user = User.query.filter_by(username=username, password=password).first()
+        user = self.auth(username)
 
         db.close()
-
-        if user:
+        if user and check_password_hash(user['password'], password):
             # If user exists, create a JWT token
             payload = {
                 'exp': datetime.utcnow() + timedelta(days=1),
                 'iat': datetime.utcnow(),
-                'sub': user.username 
+                'sub': user["username"] 
             }
-            token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-            return {"message": "Login successful", "token": token, "username":user.username}
+            token = jwt.encode(payload, SECRET_KEY)
+            return {"message": "Login successful", "token": token, "username": user["username"]}
         else:
             return {"message": "Invalid credentials"}
     

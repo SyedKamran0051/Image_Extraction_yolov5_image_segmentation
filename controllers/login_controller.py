@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from services.login_service import LoginService
+from werkzeug.security import generate_password_hash
 from constants import DB_name,path
 #buleprint and service
 login_blueprint = Blueprint('login', __name__)
@@ -7,16 +8,16 @@ login_service = LoginService(path)
 
 @login_blueprint.route('/login', methods=['POST'])
 def login():
+    print("login")
     try:
-        username = request.form.get('username')
-        password = request.form.get('password')
-        
+        data = request.json
+        username = data.get("username")
+        password = data.get('password')
         if not username or not password:
             return jsonify({"message": "Both username and password are required"}), 400
         
         # Use LoginService to authenticate user
         auth_result = login_service.authenticate_user(username, password)
-        
         if 'token' in auth_result:
             return jsonify(auth_result), 200
         else:
@@ -30,7 +31,9 @@ def create_user():
         data = request.get_json()
         username = data['username']
         password = data['password']
-        login_service.create_user(username, password)
+        
+        hashed_password = generate_password_hash(password, method='scrypt')
+        login_service.create_user(username, hashed_password)
         return jsonify({'message': 'User created successfully'}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
