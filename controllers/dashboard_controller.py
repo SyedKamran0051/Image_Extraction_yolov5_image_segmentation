@@ -1,6 +1,6 @@
 # dashboard_controller.py
 from flask import Blueprint, request, jsonify
-from dashboard_service import DashboardService
+from services.dashboard_service import DashboardService
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -18,3 +18,22 @@ def delete_folder(folder_id):
     if success:
         return jsonify({"message": "Folder deleted successfully"}), 200
     return jsonify({"message": "Folder not found"}), 404
+
+@dashboard_bp.route('/get-folders', methods=['POST'])
+def get_folders():
+    try:
+        data = request.json
+        user = data.get('user')
+        if not user:
+            return jsonify({'message': 'User ID is required'}), 400
+
+        folders = DashboardService.get_all_folders_for_user(user)
+        
+        if folders is None:
+            return jsonify({'message': 'Unable to fetch folders'}), 500
+
+        return jsonify({'folders': folders}), 200
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return jsonify({'message': 'An internal error occurred'}), 500

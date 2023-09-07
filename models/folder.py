@@ -1,8 +1,8 @@
 # folder.py
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from init_db import db
 
-db = SQLAlchemy()
 
 class Folder(db.Model):
     __tablename__ = 'folders'

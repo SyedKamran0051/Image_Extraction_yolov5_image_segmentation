@@ -1,6 +1,7 @@
 from flask import Flask
 from controllers.predict_images_controller import predict_images_blueprint
 from controllers.login_controller import login_blueprint
+from controllers.dashboard_controller import dashboard_bp
 from models.user import User
 from flask_cors import CORS
 from constants import DB_name
@@ -17,6 +18,9 @@ app.register_blueprint(predict_images_blueprint, url_prefix='/predict_images')
 
 # Registering the login blueprint
 app.register_blueprint(login_blueprint, url_prefix='/login')
+
+# Registering the dashboard blueprint
+app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 
 def init_db():
     with app.app_context():

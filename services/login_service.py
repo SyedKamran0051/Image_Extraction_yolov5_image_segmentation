@@ -23,7 +23,6 @@ class LoginService:
     def authenticate_user(self, username, password):
         # Check credentials against database
         db = DatabaseConnection(self.db_path)
-        print(username, password)
         try:
             cursor = db.connect()
         except Exception as e:
