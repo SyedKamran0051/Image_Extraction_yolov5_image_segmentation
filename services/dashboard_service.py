@@ -17,6 +17,9 @@ class DashboardService:
     def delete_folder(folder_id):
         folder = Folder.query.get(folder_id)
         if folder:
+            folder_name = folder.folder  # Extract the folder name from the folder object
+
+            # Delete from the database
             db.session.delete(folder)
             db.session.commit()
             # delete from s3
