@@ -2,8 +2,8 @@ from flask import Flask
 from controllers.predict_images_controller import predict_images_blueprint
 from controllers.login_controller import login_blueprint
 from controllers.dashboard_controller import dashboard_bp
-from models.user import User
 from flask_cors import CORS
+from seed import seed_user 
 from constants import DB_name
 from init_db import db
 
@@ -25,6 +25,7 @@ app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 def init_db():
     with app.app_context():
         db.create_all()
+        seed_user()
 
 
 init_db()

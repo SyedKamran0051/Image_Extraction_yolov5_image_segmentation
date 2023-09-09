@@ -14,17 +14,18 @@ class DashboardService:
         return new_folder
 
     @staticmethod
-    def delete_folder(folder_id):
-        folder = Folder.query.get(folder_id)
-        if folder:
-            folder_name = folder.folder  # Extract the folder name from the folder object
-
-            # Delete from the database
-            db.session.delete(folder)
-            db.session.commit()
-            # delete from s3
-            return True
-        return False
+    def delete_folder(folder_name):
+        try:
+            folder = Folder.query.filter_by(folder=folder_name).first()
+            if folder:
+                db.session.delete(folder)
+                db.session.commit()
+                return True
+            else:
+                return False
+        except Exception as e:
+            print(e)
+            return False
     
     @staticmethod
     def get_all_folders_for_user(user_id):

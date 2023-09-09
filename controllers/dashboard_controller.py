@@ -12,12 +12,13 @@ def create_folder():
     new_folder = DashboardService.create_folder(user, folder_name)
     return jsonify({"message": "Folder created successfully", "folder": new_folder.folder}), 201
 
-@dashboard_bp.route('/delete-folder/<int:folder_id>', methods=['DELETE'])
-def delete_folder(folder_id):
-    success = DashboardService.delete_folder(folder_id)
+@dashboard_bp.route('/delete-folder/<string:folder_name>', methods=['DELETE'])
+def delete_folder(folder_name):
+    print(folder_name)
+    success = DashboardService.delete_folder(folder_name)
     if success:
         return jsonify({"message": "Folder deleted successfully"}), 200
-    return jsonify({"message": "Folder not found"}), 404
+    return jsonify({"error": "Folder not found"}), 404
 
 @dashboard_bp.route('/get-folders', methods=['POST'])
 def get_folders():
