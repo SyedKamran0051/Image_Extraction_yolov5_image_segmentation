@@ -60,7 +60,7 @@ async def predict():
         model = predict_service.loading_model(api_key=api_key)
 
         # Drawing bounding boxes based on instance segmentation prediction results
-        # cropped_images_paths = predict_service.bounding_boxes(model=model, image_paths=image_paths)
+        cropped_images_paths = predict_service.bounding_boxes(model=model, image_paths=image_paths)
         # Concatenate the downloaded S3 directory and the prefix for uploading
         # Extract the prefix from the S3 URL
         # parsed_url = urlparse(s3_directory_url)
@@ -77,6 +77,7 @@ async def predict():
         os.makedirs(cropped_images_directory)
         
         # return S3 URLs of the uploaded images
-        return jsonify({'Cropped_images': cropped_images_uploaded_urls}), 200
+        number_of_cropped_images = len(cropped_images_uploaded_urls)
+        return jsonify({'Cropped_images': cropped_images_uploaded_urls,"number_of_files":number_of_cropped_images}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400

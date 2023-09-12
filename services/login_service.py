@@ -1,6 +1,7 @@
 import jwt
 from database_connection import DatabaseConnection
 import os
+from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from models.user import User
 from datetime import datetime,timedelta
@@ -58,3 +59,24 @@ class LoginService:
             return 1
         else:
             return 0
+        
+    @staticmethod
+    def change_password(current_user, old_password, new_password):
+        # Fetch user by username (or ID, depending on your setup)
+        user = User.query.filter_by(username=current_user).first()
+
+        if user is None:
+            return False
+
+        # Verify the old password
+        if not check_password_hash(user.password, old_password):
+            return False
+
+        # Hash the new password using scrypt
+        hashed_new_password = generate_password_hash(new_password, method='scrypt', salt_length=16)
+
+        # Update the user's password
+        user.password = hashed_new_password
+        db.session.commit()
+
+        return True
