@@ -1,4 +1,5 @@
 from flask import Flask, Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 import os
 import sys
 import shutil
@@ -32,6 +33,7 @@ def health_check():
     return jsonify({'status': 'healthy'}), 200
 
 @predict_images_blueprint.route('/predict', methods=['POST'])
+@jwt_required() 
 async def predict():
 
     # Get the JSON data from the request

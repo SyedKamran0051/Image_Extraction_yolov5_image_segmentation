@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from services.login_service import LoginService
 from werkzeug.security import generate_password_hash
 from constants import DB_name,path
@@ -27,6 +27,7 @@ def login():
         return jsonify({"error": str(e)}), 500
 
 @login_blueprint.route('/create_user', methods=['POST'])
+@jwt_required() 
 def create_user():
     try:
         data = request.get_json()
