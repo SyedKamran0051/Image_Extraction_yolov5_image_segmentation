@@ -21,3 +21,19 @@ def jwt_required(f):
             return jsonify({"message": "Invalid token"}), 401
         return f(*args, **kwargs)
     return wrapper
+
+def extract_username_from_jwt(token):
+    try:
+        # Decode the token using the secret key
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        
+        # Extract the username from the payload
+        username = payload['sub']
+        
+        return username
+    
+    except jwt.ExpiredSignatureError:
+        return "Signature has expired"
+    
+    except jwt.InvalidTokenError:
+        return "Invalid token"

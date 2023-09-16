@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-#from flask_jwt_extended import jwt_required, get_jwt_identity
+from authentication import extract_username_from_jwt
 from services.login_service import LoginService
 from werkzeug.security import generate_password_hash
 from constants import DB_name,path
@@ -30,6 +30,7 @@ def login():
 #@jwt_required() 
 def create_user():
     try:
+
         data = request.get_json()
         username = data['username']
         password = data['password']
@@ -58,8 +59,10 @@ def change_password():
         
         if not old_password or not new_password:
             return jsonify({'message': 'Both old and new passwords are required'}), 400
-
-        current_user = "admin"
+        
+        auth_header = request.headers.get('Authorization')
+        bearer_token = auth_header.split(" ")[1]
+        current_user = extract_username_from_jwt(bearer_token)
 
         if LoginService.change_password(current_user, old_password, new_password):
             return jsonify({'message': 'Password successfully changed'}), 200

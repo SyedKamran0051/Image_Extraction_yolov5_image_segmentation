@@ -25,6 +25,7 @@ class LoginService:
         # Check credentials against database
         db = DatabaseConnection(self.db_path)
         try:
+
             cursor = db.connect()
         except Exception as e:
             return e
@@ -42,6 +43,7 @@ class LoginService:
             return {"message": "Login successful", "token": token, "username": user["username"]}
         else:
             return {"message": "Invalid credentials"}
+
     
 
     def create_user(self,username, password):
