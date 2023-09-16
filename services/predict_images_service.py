@@ -10,7 +10,7 @@ class PredictImagesService:
         img = Image.open(image)
         grayscale_img = img.convert('L')
         return grayscale_img
-    
+
     def loading_images_paths(self, directory_path):
         image_extensions = ['.jpg']  # Add more extensions if needed
         image_paths = []
@@ -42,7 +42,7 @@ class PredictImagesService:
         model = project.version(3).model
 
         return model
-    
+
     def bounding_boxes(self, model, image_paths, target_size=(2500,2500)):
         segmented_images_paths = []
         for image_path in image_paths:
@@ -69,9 +69,9 @@ class PredictImagesService:
 
             # Resize the image while maintaining aspect ratio
             resized_image = cv2.resize(image, (new_width, new_height), interpolation=interpolation_method)
-            
+
             # Save the resized image temporarily to a new path
-            temp_resized_image_path = "/Users/me/code/Image_Extraction_yolov5_image_segmentation/temp/resized_image.jpg"
+            temp_resized_image_path = "/home/ec2-user/creekcut/Image_Extraction_yolov5_image_segmentation/temp/resized_image.jpg"
             cv2.imwrite(temp_resized_image_path, resized_image)
 
             # Perform prediction using the resized image path
@@ -95,7 +95,7 @@ class PredictImagesService:
                 # Save the segmented image with corresponding name
                 original_image_name = os.path.basename(image_path)
                 segmented_image_name = f"segmented_{idx}_{original_image_name}"
-                save_path = os.path.join("/Users/me/code/Image_Extraction_yolov5_image_segmentation/cropped_images_from_the_album", segmented_image_name)
+                save_path = os.path.join("/home/ec2-user/creekcut/Image_Extraction_yolov5_image_segmentation/cropped_images_from_the_album", segmented_image_name)
                 cv2.imwrite(save_path, cropped_image)
                 segmented_images_paths.append(save_path)
 

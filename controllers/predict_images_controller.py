@@ -1,5 +1,4 @@
 from flask import Flask, Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
 import os
 import sys
 import shutil
@@ -33,7 +32,6 @@ def health_check():
     return jsonify({'status': 'healthy'}), 200
 
 @predict_images_blueprint.route('/predict', methods=['POST'])
-@jwt_required() 
 async def predict():
 
     # Get the JSON data from the request
@@ -57,7 +55,7 @@ async def predict():
         # loading multiple images
         image_paths = predict_service.loading_images_paths(directory_path=local_directory)
 
-        # Initialize the model 
+        # Initialize the model
         api_key = os.getenv("API_KEY")
         model = predict_service.loading_model(api_key=api_key)
 
@@ -71,13 +69,13 @@ async def predict():
         #complete_s3_prefix = f'{s3_prefix}\predictions'  # Modify this as needed
         # upload cropped images to S3 and return the S3 URLs as a list
         cropped_images_uploaded_urls = upload_directory_to_s3(cropped_images_directory, bucket_name, s3_prefix)
-        
+
         # Delete the contents of the downloaded_album and cropped_images_from_the_album directories
         shutil.rmtree(local_directory)
         shutil.rmtree(cropped_images_directory)
         os.makedirs(local_directory)
         os.makedirs(cropped_images_directory)
-        
+
         # return S3 URLs of the uploaded images
         number_of_cropped_images = len(cropped_images_uploaded_urls)
         return jsonify({'Cropped_images': cropped_images_uploaded_urls,"number_of_files":number_of_cropped_images}), 200

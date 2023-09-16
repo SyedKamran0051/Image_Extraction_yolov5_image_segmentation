@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
+#from flask_jwt_extended import jwt_required, get_jwt_identity
 from services.login_service import LoginService
 from werkzeug.security import generate_password_hash
 from constants import DB_name,path
@@ -27,7 +27,7 @@ def login():
         return jsonify({"error": str(e)}), 500
 
 @login_blueprint.route('/create_user', methods=['POST'])
-@jwt_required() 
+#@jwt_required() 
 def create_user():
     try:
         data = request.get_json()
@@ -49,7 +49,7 @@ def delete_user(username):
         return jsonify({"error": "User does not exist"}), 500
     
 @login_blueprint.route('/change-password', methods=['POST'])
-@jwt_required()  # Ensures that the user is logged in
+#@jwt_required()  # Ensures that the user is logged in
 def change_password():
     try:
         data = request.json
@@ -59,7 +59,7 @@ def change_password():
         if not old_password or not new_password:
             return jsonify({'message': 'Both old and new passwords are required'}), 400
 
-        current_user = get_jwt_identity()
+        current_user = "admin"
 
         if LoginService.change_password(current_user, old_password, new_password):
             return jsonify({'message': 'Password successfully changed'}), 200
